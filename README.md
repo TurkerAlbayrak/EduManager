@@ -93,4 +93,3 @@ Uygulamayı test etmek için Giriş (Login) ekranındaki **"Öğretmen Demosu"**
 
 ---
 
-*Geliştirici:* [İsminiz/Kullanıcı Adınız]
