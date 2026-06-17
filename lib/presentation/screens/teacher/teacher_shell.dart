@@ -65,43 +65,7 @@ class _TeacherShellState extends State<TeacherShell> {
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
       actions: [
-        // Bildirim ikonu
-        Consumer<NotificationProvider>(
-          builder: (context, notifProvider, _) {
-            return Stack(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.notifications_outlined),
-                  onPressed: () => context.go('/teacher/notifications'),
-                ),
-                if (notifProvider.hasUnread)
-                  Positioned(
-                    right: 8,
-                    top: 8,
-                    child: Container(
-                      width: 18,
-                      height: 18,
-                      decoration: const BoxDecoration(
-                        color: AppColors.danger,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${notifProvider.unreadCount}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
-        // Tema değiştirme
+        // Tema değiştirme (mobil)
         Consumer<ThemeProvider>(
           builder: (context, themeProvider, _) {
             return IconButton(
@@ -321,38 +285,6 @@ class _TeacherShellState extends State<TeacherShell> {
             child: Column(
               children: [
                 const Divider(),
-                // Bildirimler
-                Consumer<NotificationProvider>(
-                  builder: (context, notifProvider, _) {
-                    return ListTile(
-                      dense: true,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      leading: const Icon(Icons.notifications_outlined, size: 22),
-                      title: const Text(AppStrings.notifications,
-                          style: TextStyle(fontSize: 14)),
-                      trailing: notifProvider.hasUnread
-                          ? Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: AppColors.danger,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                '${notifProvider.unreadCount}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            )
-                          : null,
-                      onTap: () => context.go('/teacher/notifications'),
-                    );
-                  },
-                ),
                 // Tema değiştirme
                 Consumer<ThemeProvider>(
                   builder: (context, themeProvider, _) {

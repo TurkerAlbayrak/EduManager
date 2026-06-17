@@ -13,7 +13,7 @@ import 'package:teachstudentapp/presentation/screens/teacher/assignments/assignm
 import 'package:teachstudentapp/presentation/screens/teacher/lessons/lesson_list_screen.dart';
 import 'package:teachstudentapp/presentation/screens/teacher/lessons/lesson_form_screen.dart';
 import 'package:teachstudentapp/presentation/screens/teacher/calendar/calendar_screen.dart';
-import 'package:teachstudentapp/presentation/screens/teacher/notifications/notification_screen.dart';
+
 import 'package:teachstudentapp/presentation/screens/student/student_shell.dart';
 import 'package:teachstudentapp/presentation/screens/student/dashboard/student_dashboard_screen.dart';
 import 'package:teachstudentapp/presentation/screens/student/assignments/student_assignment_screen.dart';
@@ -74,7 +74,7 @@ class AppRouter {
           ]),
         ],
       ),
-      GoRoute(path: '/teacher/notifications', builder: (context, state) => const NotificationScreen()),
+
 
       // ========== ÖĞRENCİ ==========
       StatefulShellRoute.indexedStack(
@@ -95,7 +95,7 @@ class AppRouter {
           ]),
         ],
       ),
-      GoRoute(path: '/student/notifications', builder: (context, state) => const NotificationScreen()),
+
     ],
   );
 }

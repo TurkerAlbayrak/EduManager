@@ -28,12 +28,7 @@ class _StudentShellState extends State<StudentShell> {
       appBar: AppBar(
         title: Text(_navItems[widget.navigationShell.currentIndex].$2, style: const TextStyle(fontWeight: FontWeight.w600)),
         actions: [
-          Consumer<NotificationProvider>(builder: (context, np, _) {
-            return Stack(children: [
-              IconButton(icon: const Icon(Icons.notifications_outlined), onPressed: () => context.go('/student/notifications')),
-              if (np.hasUnread) Positioned(right: 8, top: 8, child: Container(width: 16, height: 16, decoration: const BoxDecoration(color: AppColors.danger, shape: BoxShape.circle), child: Center(child: Text('${np.unreadCount}', style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold))))),
-            ]);
-          }),
+
           Consumer<ThemeProvider>(builder: (context, tp, _) => IconButton(icon: Icon(tp.isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded), onPressed: tp.toggleTheme)),
         ],
       ),
