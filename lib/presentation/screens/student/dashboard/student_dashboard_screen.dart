@@ -41,7 +41,7 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
         Consumer2<AssignmentProvider, LessonProvider>(builder: (context, ap, lp, _) {
           return GridView.count(
             crossAxisCount: 2, shrinkWrap: true, physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 12, mainAxisSpacing: 12, childAspectRatio: 1.3,
+            crossAxisSpacing: 12, mainAxisSpacing: 12, childAspectRatio: 1.5,
             children: [
               StatCard(title: 'Bekleyen Ödev', value: '${ap.pendingCount + ap.inProgressCount}', icon: Icons.assignment_late_rounded, color: AppColors.warning).animate(delay: 200.ms).fadeIn().slideY(begin: 0.1),
               StatCard(title: 'Tamamlanan Ödev', value: '${ap.completedCount}', icon: Icons.check_circle_rounded, color: AppColors.success).animate(delay: 300.ms).fadeIn().slideY(begin: 0.1),

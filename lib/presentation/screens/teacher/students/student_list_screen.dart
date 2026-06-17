@@ -99,14 +99,17 @@ class _StudentListScreenState extends State<StudentListScreen> {
               ),
               const SizedBox(height: 12),
               // Filtreler
-              Row(
-                children: [
-                  _filterChip('Tümü (${provider.totalCount})', 'all', provider),
-                  const SizedBox(width: 8),
-                  _filterChip('Aktif (${provider.activeCount})', 'active', provider),
-                  const SizedBox(width: 8),
-                  _filterChip('Pasif (${provider.passiveCount})', 'passive', provider),
-                ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _filterChip('Tümü (${provider.totalCount})', 'all', provider),
+                    const SizedBox(width: 8),
+                    _filterChip('Aktif (${provider.activeCount})', 'active', provider),
+                    const SizedBox(width: 8),
+                    _filterChip('Pasif (${provider.passiveCount})', 'passive', provider),
+                  ],
+                ),
               ),
             ],
           ),

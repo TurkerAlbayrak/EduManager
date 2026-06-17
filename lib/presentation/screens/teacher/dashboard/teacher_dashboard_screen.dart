@@ -142,7 +142,7 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
             crossAxisCount: isWide ? 3 : 2,
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
-            childAspectRatio: isWide ? 1.4 : 1.2,
+            childAspectRatio: isWide ? 1.6 : 1.5,
           ),
           itemCount: stats.length,
           itemBuilder: (context, index) {
