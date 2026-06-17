@@ -7,7 +7,7 @@ import 'presentation/providers/auth_provider.dart';
 import 'presentation/providers/student_provider.dart';
 import 'presentation/providers/assignment_provider.dart';
 import 'presentation/providers/lesson_provider.dart';
-import 'presentation/providers/notification_provider.dart';
+
 import 'presentation/providers/theme_provider.dart';
 
 /// EduManager - Profesyonel Eğitim Yönetim Sistemi
@@ -30,7 +30,7 @@ class EduManagerApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => StudentProvider()),
         ChangeNotifierProvider(create: (_) => AssignmentProvider()),
         ChangeNotifierProvider(create: (_) => LessonProvider()),
-        ChangeNotifierProvider(create: (_) => NotificationProvider()),
+
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {

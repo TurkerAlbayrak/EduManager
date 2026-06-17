@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/notification_provider.dart';
+
 import '../../providers/theme_provider.dart';
 import '../../widgets/common/responsive_layout.dart';
 

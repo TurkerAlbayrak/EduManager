@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
-import '../../providers/notification_provider.dart';
+
 import '../../providers/theme_provider.dart';
 
 /// Öğrenci ana kabuk (shell).
