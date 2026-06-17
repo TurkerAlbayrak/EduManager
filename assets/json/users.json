@@ -1,0 +1,42 @@
+[
+  {
+    "id": "t1",
+    "name": "Ahmet Yılmaz",
+    "email": "ahmet@example.com",
+    "password": "123456",
+    "role": "teacher",
+    "avatarUrl": null,
+    "createdAt": "2026-01-15T10:00:00Z",
+    "linkedStudentId": null
+  },
+  {
+    "id": "s1",
+    "name": "Elif Demir",
+    "email": "elif@example.com",
+    "password": "123456",
+    "role": "student",
+    "avatarUrl": null,
+    "createdAt": "2026-02-01T10:00:00Z",
+    "linkedStudentId": "st1"
+  },
+  {
+    "id": "s2",
+    "name": "Can Öztürk",
+    "email": "can@example.com",
+    "password": "123456",
+    "role": "student",
+    "avatarUrl": null,
+    "createdAt": "2026-02-15T10:00:00Z",
+    "linkedStudentId": "st2"
+  },
+  {
+    "id": "s3",
+    "name": "Zeynep Kaya",
+    "email": "zeynep@example.com",
+    "password": "123456",
+    "role": "student",
+    "avatarUrl": null,
+    "createdAt": "2026-03-01T10:00:00Z",
+    "linkedStudentId": "st3"
+  }
+]

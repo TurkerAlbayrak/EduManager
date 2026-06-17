@@ -1,0 +1,122 @@
+[
+  {
+    "id": "l1",
+    "teacherId": "t1",
+    "studentId": "st1",
+    "date": "2026-06-18",
+    "startTime": "14:00",
+    "durationMinutes": 60,
+    "topic": "Türev ve Uygulamaları",
+    "content": "Türev kuralları, zincir kuralı, çarpım ve bölüm kuralı",
+    "teacherNote": null,
+    "status": "scheduled"
+  },
+  {
+    "id": "l2",
+    "teacherId": "t1",
+    "studentId": "st2",
+    "date": "2026-06-18",
+    "startTime": "16:00",
+    "durationMinutes": 90,
+    "topic": "Newton Hareket Yasaları",
+    "content": "Kuvvet, ivme ve hareket problemleri",
+    "teacherNote": null,
+    "status": "scheduled"
+  },
+  {
+    "id": "l3",
+    "teacherId": "t1",
+    "studentId": "st3",
+    "date": "2026-06-19",
+    "startTime": "10:00",
+    "durationMinutes": 60,
+    "topic": "English Conversation",
+    "content": "Daily routines, present tense practice",
+    "teacherNote": null,
+    "status": "scheduled"
+  },
+  {
+    "id": "l4",
+    "teacherId": "t1",
+    "studentId": "st1",
+    "date": "2026-06-15",
+    "startTime": "14:00",
+    "durationMinutes": 60,
+    "topic": "Limit ve Süreklilik",
+    "content": "Limit tanımı, limit hesaplama teknikleri, süreklilik kavramı",
+    "teacherNote": "Öğrenci konuyu iyi kavradı. L'Hopital kuralına geçilebilir.",
+    "status": "completed"
+  },
+  {
+    "id": "l5",
+    "teacherId": "t1",
+    "studentId": "st2",
+    "date": "2026-06-14",
+    "startTime": "16:00",
+    "durationMinutes": 90,
+    "topic": "Kinematik",
+    "content": "Düzgün hızlı hareket, düzgün ivmeli hareket, serbest düşme",
+    "teacherNote": "Grafik okuma konusunda ek çalışma gerekiyor.",
+    "status": "completed"
+  },
+  {
+    "id": "l6",
+    "teacherId": "t1",
+    "studentId": "st5",
+    "date": "2026-06-16",
+    "startTime": "11:00",
+    "durationMinutes": 60,
+    "topic": "Üçgenler ve Özellikleri",
+    "content": "Üçgen eşitsizliği, açıortay, kenarortay",
+    "teacherNote": "Çok iyi ilerleme kaydetti.",
+    "status": "completed"
+  },
+  {
+    "id": "l7",
+    "teacherId": "t1",
+    "studentId": "st3",
+    "date": "2026-06-13",
+    "startTime": "10:00",
+    "durationMinutes": 60,
+    "topic": "Reading Comprehension",
+    "content": "Short stories, vocabulary building, comprehension questions",
+    "teacherNote": "Kelime hazinesi gelişiyor ama hala grammar hataları yapıyor.",
+    "status": "completed"
+  },
+  {
+    "id": "l8",
+    "teacherId": "t1",
+    "studentId": "st1",
+    "date": "2026-06-20",
+    "startTime": "14:00",
+    "durationMinutes": 60,
+    "topic": "İntegral",
+    "content": "Belirsiz integral, integral alma kuralları",
+    "teacherNote": null,
+    "status": "scheduled"
+  },
+  {
+    "id": "l9",
+    "teacherId": "t1",
+    "studentId": "st5",
+    "date": "2026-06-21",
+    "startTime": "11:00",
+    "durationMinutes": 60,
+    "topic": "Dörtgenler",
+    "content": "Paralelkenar, dikdörtgen, kare, yamuk",
+    "teacherNote": null,
+    "status": "scheduled"
+  },
+  {
+    "id": "l10",
+    "teacherId": "t1",
+    "studentId": "st2",
+    "date": "2026-06-12",
+    "startTime": "16:00",
+    "durationMinutes": 90,
+    "topic": "Vektörler",
+    "content": "Vektör tanımı, toplama, çıkarma, skaler çarpım",
+    "teacherNote": "Skaler çarpım konusunda zorluk çekiyor.",
+    "status": "completed"
+  }
+]
