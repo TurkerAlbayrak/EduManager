@@ -46,7 +46,7 @@ class StatCard extends StatelessWidget {
             color: color.withValues(alpha: isDark ? 0.3 : 0.2),
           ),
         ),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -55,12 +55,12 @@ class StatCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: isDark ? 0.3 : 0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(icon, color: color, size: 24),
+                  child: Icon(icon, color: color, size: 22),
                 ),
                 if (onTap != null)
                   Icon(
@@ -70,20 +70,20 @@ class StatCard extends StatelessWidget {
                   ),
               ],
             ),
-            const SizedBox(height: 16),
+            const Spacer(),
             Text(
               value,
               style: TextStyle(
-                fontSize: 28,
+                fontSize: 24,
                 fontWeight: FontWeight.w700,
                 color: isDark ? Colors.white : AppColors.textPrimary,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Text(
               title,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: FontWeight.w500,
                 color: isDark ? AppColors.darkTextSecondary : AppColors.textSecondary,
               ),

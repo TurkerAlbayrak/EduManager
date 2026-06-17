@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'core/theme/app_theme.dart';
 import 'core/services/navigation_service.dart';
 import 'presentation/providers/auth_provider.dart';
@@ -11,8 +12,9 @@ import 'presentation/providers/theme_provider.dart';
 
 /// EduManager - Profesyonel Eğitim Yönetim Sistemi
 /// Ana uygulama giriş noktası.
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('tr_TR', null);
   runApp(const EduManagerApp());
 }
 
