@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:teachstudentapp/presentation/screens/splash/splash_screen.dart';
 import 'package:teachstudentapp/presentation/screens/auth/login_screen.dart';
+import 'package:teachstudentapp/presentation/screens/auth/register_screen.dart';
+import 'package:teachstudentapp/presentation/screens/profile/profile_screen.dart';
 import 'package:teachstudentapp/presentation/screens/teacher/teacher_shell.dart';
 import 'package:teachstudentapp/presentation/screens/teacher/dashboard/teacher_dashboard_screen.dart';
 import 'package:teachstudentapp/presentation/screens/teacher/students/student_list_screen.dart';
@@ -31,6 +33,8 @@ class AppRouter {
     routes: [
       GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(path: '/register', builder: (context, state) => const RegisterScreen()),
+      GoRoute(path: '/profile', builder: (context, state) => const ProfileScreen()),
 
       // ========== ÖĞRETMEN ==========
       StatefulShellRoute.indexedStack(

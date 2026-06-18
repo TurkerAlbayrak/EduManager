@@ -1,22 +1,31 @@
 import '../../domain/entities/assignment_entity.dart';
 import '../../domain/repositories/assignment_repository.dart';
-import '../datasources/assignment_local_data_source.dart';
+import '../datasources/assignment_supabase_data_source.dart';
 import '../models/assignment_model.dart';
 
-/// AssignmentRepository'nin yerel JSON implementasyonu.
+/// AssignmentRepository'nin Supabase implementasyonu.
 class AssignmentRepositoryImpl implements AssignmentRepository {
-  final AssignmentLocalDataSource _dataSource;
+  final AssignmentSupabaseDataSource _dataSource;
 
-  AssignmentRepositoryImpl({AssignmentLocalDataSource? dataSource})
-      : _dataSource = dataSource ?? AssignmentLocalDataSource();
-
-  @override
-  Future<List<AssignmentEntity>> getAssignmentsByTeacherId(String teacherId) =>
-      _dataSource.getAssignmentsByTeacherId(teacherId);
+  AssignmentRepositoryImpl({AssignmentSupabaseDataSource? dataSource})
+      : _dataSource = dataSource ?? AssignmentSupabaseDataSource();
 
   @override
-  Future<List<AssignmentEntity>> getAssignmentsByStudentId(String studentId) =>
-      _dataSource.getAssignmentsByStudentId(studentId);
+  Future<List<AssignmentEntity>> getAssignmentsByTeacherId(String teacherId) async {
+    final list = await _dataSource.getAssignmentsByTeacherId(teacherId);
+    return List<AssignmentEntity>.from(list);
+  }
+
+  @override
+  Future<List<AssignmentEntity>> getAssignmentsByStudentId(String studentId) async {
+    final list = await _dataSource.getAssignmentsByStudentId(studentId);
+    return List<AssignmentEntity>.from(list);
+  }
+
+  Future<List<AssignmentEntity>> getAssignmentsByStudentIds(List<String> studentIds) async {
+    final list = await _dataSource.getAssignmentsByStudentIds(studentIds);
+    return List<AssignmentEntity>.from(list);
+  }
 
   @override
   Future<AssignmentEntity?> getAssignmentById(String id) =>

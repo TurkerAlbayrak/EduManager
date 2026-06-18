@@ -24,9 +24,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    // Demo amaçlı önceden doldur
-    _emailController.text = 'ahmet@example.com';
-    _passwordController.text = '123456';
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<AuthProvider>().clearError();
+    });
   }
 
   @override
@@ -198,8 +198,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ).animate(delay: 300.ms).fadeIn().slideX(begin: -0.1),
                       const SizedBox(height: 40),
                       _buildLoginForm(),
-                      const SizedBox(height: 24),
-                      _buildDemoAccounts(),
                     ],
                   ),
                 ),
@@ -356,6 +354,30 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                 ),
               ).animate(delay: 600.ms).fadeIn().slideY(begin: 0.1),
+
+              const SizedBox(height: 16),
+              
+              // Kayıt Ol yönlendirmesi
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Hesabınız yok mu?',
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.textSecondary,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context.read<AuthProvider>().clearError();
+                      context.push('/register');
+                    },
+                    child: const Text('Kayıt Ol'),
+                  ),
+                ],
+              ).animate(delay: 700.ms).fadeIn().slideY(begin: 0.1),
             ],
           ),
         );
@@ -363,90 +385,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildDemoAccounts() {
-    return Column(
-      children: [
-        const Divider(height: 40),
-        Text(
-          'Demo Hesaplar',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? AppColors.darkTextSecondary
-                : AppColors.textSecondary,
-          ),
-        ),
-        const SizedBox(height: 12),
-        _buildDemoAccountTile(
-          'Öğretmen',
-          'ahmet@example.com',
-          Icons.person_rounded,
-          AppColors.primary,
-        ),
-        const SizedBox(height: 8),
-        _buildDemoAccountTile(
-          'Öğrenci',
-          'elif@example.com',
-          Icons.school_rounded,
-          AppColors.success,
-        ),
-      ],
-    ).animate(delay: 700.ms).fadeIn();
-  }
-
-  Widget _buildDemoAccountTile(
-    String role,
-    String email,
-    IconData icon,
-    Color color,
-  ) {
-    return InkWell(
-      onTap: () {
-        _emailController.text = email;
-        _passwordController.text = '123456';
-      },
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: color.withValues(alpha: 0.3),
-          ),
-          color: color.withValues(alpha: 0.05),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: color, size: 20),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  role,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                    color: color,
-                  ),
-                ),
-                Text(
-                  email,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? AppColors.darkTextTertiary
-                        : AppColors.textTertiary,
-                  ),
-                ),
-              ],
-            ),
-            const Spacer(),
-            Icon(Icons.arrow_forward_ios_rounded, size: 14, color: color),
-          ],
-        ),
-      ),
-    );
-  }
 }

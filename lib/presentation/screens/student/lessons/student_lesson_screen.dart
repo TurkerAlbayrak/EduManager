@@ -23,8 +23,8 @@ class _StudentLessonScreenState extends State<StudentLessonScreen> with SingleTi
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final linkedId = context.read<AuthProvider>().currentUser?.linkedStudentId ?? '';
-      context.read<LessonProvider>().loadStudentLessons(linkedId);
+      final userId = context.read<AuthProvider>().currentUser?.id ?? '';
+      context.read<LessonProvider>().loadStudentLessons(userId);
     });
   }
 

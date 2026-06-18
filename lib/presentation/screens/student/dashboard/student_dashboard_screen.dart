@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/date_utils.dart';
@@ -22,9 +23,13 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final auth = context.read<AuthProvider>();
-      final linkedId = auth.currentUser?.linkedStudentId ?? '';
-      context.read<AssignmentProvider>().loadStudentAssignments(linkedId);
-      context.read<LessonProvider>().loadStudentLessons(linkedId);
+      if (!auth.isLoggedIn) {
+        context.go('/login');
+        return;
+      }
+      final userId = auth.currentUser?.id ?? '';
+      context.read<AssignmentProvider>().loadStudentAssignments(userId);
+      context.read<LessonProvider>().loadStudentLessons(userId);
     });
   }
 
@@ -37,6 +42,20 @@ class _StudentDashboardScreenState extends State<StudentDashboardScreen> {
         Text('Hoş geldin, ${context.watch<AuthProvider>().userName}', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)).animate().fadeIn(),
         const SizedBox(height: 4),
         Text('Bugün neler var?', style: TextStyle(color: isDark ? AppColors.darkTextSecondary : AppColors.textSecondary)).animate(delay: 100.ms).fadeIn(),
+        const SizedBox(height: 20),
+        Consumer2<AssignmentProvider, LessonProvider>(builder: (context, ap, lp, _) {
+          if (ap.error != null || lp.error != null) {
+            return Container(
+              padding: const EdgeInsets.all(12),
+              color: AppColors.danger.withValues(alpha: 0.1),
+              child: Text(
+                'Hata: ${ap.error ?? ''} ${lp.error ?? ''}\n(Eğer hiçbir ders/ödev gözükmüyorsa, öğretmeniniz sizi Sisteme ID\'niz ile kaydetmemiş olabilir veya bir sütun hatası vardır.)',
+                style: const TextStyle(color: AppColors.danger),
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        }),
         const SizedBox(height: 20),
         Consumer2<AssignmentProvider, LessonProvider>(builder: (context, ap, lp, _) {
           return GridView.count(

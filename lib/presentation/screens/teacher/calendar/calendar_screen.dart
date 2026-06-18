@@ -28,9 +28,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final userId = context.read<AuthProvider>().userId;
-      context.read<LessonProvider>().loadLessons(userId);
-      context.read<AssignmentProvider>().loadAssignments(userId);
+      final auth = context.read<AuthProvider>();
+      if (auth.isStudent) {
+        context.read<LessonProvider>().loadStudentLessons(auth.userId);
+        context.read<AssignmentProvider>().loadStudentAssignments(auth.userId);
+      } else {
+        context.read<LessonProvider>().loadLessons(auth.userId);
+        context.read<AssignmentProvider>().loadAssignments(auth.userId);
+      }
     });
   }
 

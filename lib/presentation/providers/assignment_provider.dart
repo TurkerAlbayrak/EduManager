@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/assignment_entity.dart';
 import '../../data/repositories/assignment_repository_impl.dart';
+import '../../data/repositories/student_repository_impl.dart';
 import 'package:uuid/uuid.dart';
 
 /// Ödev state management.
 /// CRUD işlemleri, filtreleme ve istatistikler.
 class AssignmentProvider extends ChangeNotifier {
   final AssignmentRepositoryImpl _repository = AssignmentRepositoryImpl();
+  final StudentRepositoryImpl _studentRepository = StudentRepositoryImpl();
   static const _uuid = Uuid();
 
   List<AssignmentEntity> _assignments = [];
   bool _isLoading = false;
+  String? _error;
   String _filterStatus = 'all';
 
   List<AssignmentEntity> get assignments =>
       _filterStatus == 'all' ? _assignments : filteredAssignments;
+  String? get error => _error;
 
   List<AssignmentEntity> get filteredAssignments {
     if (_filterStatus == 'all') return _assignments;
@@ -64,15 +68,25 @@ class AssignmentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Öğrenciye ait ödevleri yükle.
-  Future<void> loadStudentAssignments(String studentId) async {
+  /// Öğrenciye ait ödevleri yükle. (Artık userId alıyor)
+  Future<void> loadStudentAssignments(String userId) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      _assignments = await _repository.getAssignmentsByStudentId(studentId);
-      _checkOverdueAssignments();
+      // 1. Kullanıcının dahil olduğu tüm öğrenci kayıtlarını bul
+      final studentRecords = await _studentRepository.getStudentsByUserId(userId);
+      final studentIds = studentRecords.map((s) => s.id).toList();
+
+      if (studentIds.isEmpty) {
+        _assignments = [];
+      } else {
+        // 2. O öğrenci kayıtlarına atanmış ödevleri getir
+        _assignments = await _repository.getAssignmentsByStudentIds(studentIds);
+        _checkOverdueAssignments();
+      }
     } catch (e) {
+      _error = e.toString();
       _assignments = [];
     }
 

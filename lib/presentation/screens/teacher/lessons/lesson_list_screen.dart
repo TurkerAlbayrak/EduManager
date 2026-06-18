@@ -20,6 +20,7 @@ class LessonListScreen extends StatefulWidget {
 
 class _LessonListScreenState extends State<LessonListScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  String? _selectedStudentId;
 
   @override
   void initState() {
@@ -48,6 +49,28 @@ class _LessonListScreenState extends State<LessonListScreen> with SingleTickerPr
               Consumer<LessonProvider>(builder: (context, p, _) => Text('${p.totalLessons} ders', style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkTextSecondary : AppColors.textSecondary))),
             ]),
           ),
+          Consumer<StudentProvider>(
+            builder: (context, studentP, _) {
+              if (studentP.students.isEmpty) return const SizedBox.shrink();
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: DropdownButtonFormField<String?>(
+                  value: _selectedStudentId,
+                  decoration: InputDecoration(
+                    labelText: 'Öğrenciye Göre Filtrele',
+                    prefixIcon: const Icon(Icons.person_search_rounded, color: AppColors.primary),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  ),
+                  items: [
+                    const DropdownMenuItem(value: null, child: Text('Tüm Öğrenciler')),
+                    ...studentP.students.map((s) => DropdownMenuItem(value: s.id, child: Text(s.fullName))),
+                  ],
+                  onChanged: (val) => setState(() => _selectedStudentId = val),
+                ),
+              );
+            },
+          ),
           TabBar(controller: _tabController, tabs: const [Tab(text: 'Yaklaşan'), Tab(text: 'Geçmiş')], labelColor: AppColors.primary, indicatorColor: AppColors.primary),
           Expanded(
             child: TabBarView(controller: _tabController, children: [
@@ -68,7 +91,12 @@ class _LessonListScreenState extends State<LessonListScreen> with SingleTickerPr
   Widget _buildLessonList({required bool upcoming}) {
     return Consumer2<LessonProvider, StudentProvider>(
       builder: (context, lessonP, studentP, _) {
-        final list = upcoming ? lessonP.upcomingLessons : lessonP.pastLessons;
+        var list = upcoming ? lessonP.upcomingLessons : lessonP.pastLessons;
+        
+        if (_selectedStudentId != null) {
+          list = list.where((l) => l.studentId == _selectedStudentId).toList();
+        }
+
         if (list.isEmpty) {
           return EmptyStateWidget(
             icon: Icons.menu_book_outlined,
@@ -111,6 +139,22 @@ class _LessonListScreenState extends State<LessonListScreen> with SingleTickerPr
                       Text(l.durationFormatted, style: TextStyle(fontSize: 12, color: isDark ? AppColors.darkTextTertiary : AppColors.textTertiary)),
                       const SizedBox(height: 4),
                       StatusBadge.forLesson(l.status.name),
+                      if (upcoming) ...[
+                        const SizedBox(height: 8),
+                        TextButton.icon(
+                          onPressed: () {
+                            context.read<LessonProvider>().markAsCompleted(l.id);
+                          },
+                          icon: const Icon(Icons.check_circle_outline_rounded, size: 16),
+                          label: const Text('Tamamla', style: TextStyle(fontSize: 12)),
+                          style: TextButton.styleFrom(
+                            foregroundColor: AppColors.success,
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                        ),
+                      ],
                     ]),
                   ],
                 ),

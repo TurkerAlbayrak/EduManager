@@ -2,6 +2,7 @@
 class StudentEntity {
   final String id;
   final String teacherId;
+  final String? userId; // Kayıtlı bir kullanıcıya bağlanmışsa onun UserEntity.id'si
   final String firstName;
   final String lastName;
   final String phone;
@@ -15,6 +16,7 @@ class StudentEntity {
   const StudentEntity({
     required this.id,
     required this.teacherId,
+    this.userId,
     required this.firstName,
     required this.lastName,
     required this.phone,
@@ -40,6 +42,7 @@ class StudentEntity {
   StudentEntity copyWith({
     String? id,
     String? teacherId,
+    String? userId,
     String? firstName,
     String? lastName,
     String? phone,
@@ -53,6 +56,7 @@ class StudentEntity {
     return StudentEntity(
       id: id ?? this.id,
       teacherId: teacherId ?? this.teacherId,
+      userId: userId ?? this.userId,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       phone: phone ?? this.phone,

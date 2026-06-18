@@ -78,6 +78,23 @@ class _TeacherShellState extends State<TeacherShell> {
             );
           },
         ),
+        // Profil (mobil)
+        IconButton(
+          icon: const Icon(Icons.person_rounded),
+          tooltip: 'Profil',
+          onPressed: () {
+            context.push('/profile');
+          },
+        ),
+        // Çıkış yap (mobil)
+        IconButton(
+          icon: const Icon(Icons.logout_rounded, color: AppColors.danger),
+          tooltip: AppStrings.logout,
+          onPressed: () {
+            context.read<AuthProvider>().logout();
+            context.go('/login');
+          },
+        ),
       ],
     );
   }
@@ -306,6 +323,17 @@ class _TeacherShellState extends State<TeacherShell> {
                       ),
                       onTap: themeProvider.toggleTheme,
                     );
+                  },
+                ),
+                // Profil (Masaüstü sidebar)
+                ListTile(
+                  dense: true,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  leading: const Icon(Icons.person_rounded, size: 22),
+                  title: const Text('Profil', style: TextStyle(fontSize: 14)),
+                  onTap: () {
+                    context.push('/profile');
                   },
                 ),
                 // Çıkış

@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/utils/validators.dart';
 import '../../../../domain/entities/student_entity.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/student_provider.dart';
@@ -21,14 +20,18 @@ class StudentFormScreen extends StatefulWidget {
 
 class _StudentFormScreenState extends State<StudentFormScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _notesController = TextEditingController();
+  final _systemIdController = TextEditingController();
+  
+  // Sadece görüntüleme amaçlı (Düzenleme modunda)
+  String _firstName = '';
+  String _lastName = '';
+  String _email = '';
+
   String _selectedLevel = AppConstants.studentLevels.first;
   bool _isActive = true;
   bool _isEditing = false;
+  bool _isLoading = false;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -45,11 +48,9 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
     final student =
         context.read<StudentProvider>().getStudentById(widget.studentId!);
     if (student != null) {
-      _firstNameController.text = student.firstName;
-      _lastNameController.text = student.lastName;
-      _phoneController.text = student.phone;
-      _emailController.text = student.email;
-      _notesController.text = student.notes ?? '';
+      _firstName = student.firstName;
+      _lastName = student.lastName;
+      _email = student.email;
       setState(() {
         _selectedLevel = student.level;
         _isActive = student.isActive;
@@ -59,16 +60,17 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
 
   @override
   void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _phoneController.dispose();
-    _emailController.dispose();
-    _notesController.dispose();
+    _systemIdController.dispose();
     super.dispose();
   }
 
   Future<void> _saveStudent() async {
     if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
 
     final provider = context.read<StudentProvider>();
     final teacherId = context.read<AuthProvider>().userId;
@@ -78,11 +80,6 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
         final existing = provider.getStudentById(widget.studentId!);
         if (existing != null) {
           await provider.updateStudent(existing.copyWith(
-            firstName: _firstNameController.text.trim(),
-            lastName: _lastNameController.text.trim(),
-            phone: _phoneController.text.trim(),
-            email: _emailController.text.trim(),
-            notes: _notesController.text.trim(),
             level: _selectedLevel,
             isActive: _isActive,
           ));
@@ -95,18 +92,23 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
             ),
           );
         }
+        if (mounted) context.go('/teacher/students');
       } else {
-        await provider.createStudent(
+        // Yeni Ekleme (ID üzerinden)
+        final error = await provider.addStudentById(
           teacherId: teacherId,
-          firstName: _firstNameController.text.trim(),
-          lastName: _lastNameController.text.trim(),
-          phone: _phoneController.text.trim(),
-          email: _emailController.text.trim(),
-          notes: _notesController.text.trim().isNotEmpty
-              ? _notesController.text.trim()
-              : null,
+          studentSystemId: _systemIdController.text.trim(),
           level: _selectedLevel,
         );
+        
+        if (error != null) {
+          setState(() {
+            _errorMessage = error;
+            _isLoading = false;
+          });
+          return;
+        }
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -114,18 +116,14 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
               backgroundColor: AppColors.success,
             ),
           );
+          context.go('/teacher/students');
         }
       }
-      if (mounted) context.go('/teacher/students');
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Hata: $e'),
-            backgroundColor: AppColors.danger,
-          ),
-        );
-      }
+      setState(() {
+        _errorMessage = 'Hata: $e';
+        _isLoading = false;
+      });
     }
   }
 
@@ -137,7 +135,7 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
       appBar: isWide
           ? null
           : AppBar(
-              title: Text(_isEditing ? AppStrings.editStudent : AppStrings.addStudent),
+              title: Text(_isEditing ? 'Öğrenci Ayarları' : 'Sistem ID ile Öğrenci Ekle'),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_rounded),
                 onPressed: () => context.go('/teacher/students'),
@@ -160,7 +158,7 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        _isEditing ? AppStrings.editStudent : AppStrings.addStudent,
+                        _isEditing ? 'Öğrenci Ayarları' : 'Sistem ID ile Öğrenci Ekle',
                         style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.w700),
                       ),
@@ -173,53 +171,49 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: _firstNameController,
-                              validator: (v) => Validators.required(v, 'Ad'),
-                              decoration: const InputDecoration(
-                                labelText: AppStrings.firstName,
-                                prefixIcon: Icon(Icons.person_outline_rounded),
-                              ),
+                      if (_isEditing) ...[
+                        // Düzenleme modunda sadece bilgileri göster
+                        Card(
+                          elevation: 0,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? AppColors.darkSurfaceVariant
+                              : AppColors.surfaceVariant,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Öğrenci Bilgileri', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
+                                const SizedBox(height: 12),
+                                Text('Ad Soyad: $_firstName $_lastName'),
+                                const SizedBox(height: 4),
+                                Text('E-posta: $_email'),
+                                const SizedBox(height: 8),
+                                const Text('Not: İsim ve e-posta öğrencinin kendi profili üzerinden değiştirilebilir.', style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
+                              ],
                             ),
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: TextFormField(
-                              controller: _lastNameController,
-                              validator: (v) => Validators.required(v, 'Soyad'),
-                              decoration: const InputDecoration(
-                                labelText: AppStrings.lastName,
-                                prefixIcon: Icon(Icons.person_outline_rounded),
-                              ),
-                            ),
+                        ),
+                        const SizedBox(height: 24),
+                      ] else ...[
+                        // Yeni ekleme modunda ID iste
+                        TextFormField(
+                          controller: _systemIdController,
+                          validator: (v) => v!.isEmpty ? 'ID zorunludur' : null,
+                          decoration: const InputDecoration(
+                            labelText: 'Öğrenci Sistem ID\'si',
+                            hintText: 'Örn: 123e4567-e89b-12d3-a456-426614174000',
+                            prefixIcon: Icon(Icons.vpn_key_outlined),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _phoneController,
-                        keyboardType: TextInputType.phone,
-                        validator: Validators.phone,
-                        decoration: const InputDecoration(
-                          labelText: AppStrings.phone,
-                          prefixIcon: Icon(Icons.phone_outlined),
-                          hintText: '+905551234567',
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: Validators.email,
-                        decoration: const InputDecoration(
-                          labelText: AppStrings.email,
-                          prefixIcon: Icon(Icons.email_outlined),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Öğrencinin profilinde yazan Sistem ID\'sini yukarıya yapıştırın.',
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
                         ),
-                      ),
-                      const SizedBox(height: 16),
+                        const SizedBox(height: 24),
+                      ],
+                      
                       DropdownButtonFormField<String>(
                         value: _selectedLevel,
                         decoration: const InputDecoration(
@@ -233,18 +227,9 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                           if (v != null) setState(() => _selectedLevel = v);
                         },
                       ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _notesController,
-                        maxLines: 3,
-                        decoration: const InputDecoration(
-                          labelText: AppStrings.notes,
-                          prefixIcon: Icon(Icons.note_outlined),
-                          alignLabelWithHint: true,
-                        ),
-                      ),
+                      
                       if (_isEditing) ...[
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 24),
                         SwitchListTile(
                           value: _isActive,
                           onChanged: (v) => setState(() => _isActive = v),
@@ -261,12 +246,20 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
                         ),
                       ],
                       const SizedBox(height: 32),
+                      
+                      if (_errorMessage != null) ...[
+                        Text(_errorMessage!, style: const TextStyle(color: AppColors.danger), textAlign: TextAlign.center),
+                        const SizedBox(height: 16),
+                      ],
+
                       SizedBox(
                         height: 52,
                         child: ElevatedButton(
-                          onPressed: _saveStudent,
-                          child: Text(
-                            _isEditing ? AppStrings.save : AppStrings.addStudent,
+                          onPressed: _isLoading ? null : _saveStudent,
+                          child: _isLoading 
+                            ? const CircularProgressIndicator(color: Colors.white)
+                            : Text(
+                            _isEditing ? AppStrings.save : 'Öğrenciyi Bul ve Ekle',
                             style: const TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w600),
                           ),

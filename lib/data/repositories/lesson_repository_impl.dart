@@ -1,22 +1,31 @@
 import '../../domain/entities/lesson_entity.dart';
 import '../../domain/repositories/lesson_repository.dart';
-import '../datasources/lesson_local_data_source.dart';
+import '../datasources/lesson_supabase_data_source.dart';
 import '../models/lesson_model.dart';
 
-/// LessonRepository'nin yerel JSON implementasyonu.
+/// LessonRepository'nin Supabase implementasyonu.
 class LessonRepositoryImpl implements LessonRepository {
-  final LessonLocalDataSource _dataSource;
+  final LessonSupabaseDataSource _dataSource;
 
-  LessonRepositoryImpl({LessonLocalDataSource? dataSource})
-      : _dataSource = dataSource ?? LessonLocalDataSource();
-
-  @override
-  Future<List<LessonEntity>> getLessonsByTeacherId(String teacherId) =>
-      _dataSource.getLessonsByTeacherId(teacherId);
+  LessonRepositoryImpl({LessonSupabaseDataSource? dataSource})
+      : _dataSource = dataSource ?? LessonSupabaseDataSource();
 
   @override
-  Future<List<LessonEntity>> getLessonsByStudentId(String studentId) =>
-      _dataSource.getLessonsByStudentId(studentId);
+  Future<List<LessonEntity>> getLessonsByTeacherId(String teacherId) async {
+    final list = await _dataSource.getLessonsByTeacherId(teacherId);
+    return List<LessonEntity>.from(list);
+  }
+
+  @override
+  Future<List<LessonEntity>> getLessonsByStudentId(String studentId) async {
+    final list = await _dataSource.getLessonsByStudentId(studentId);
+    return List<LessonEntity>.from(list);
+  }
+
+  Future<List<LessonEntity>> getLessonsByStudentIds(List<String> studentIds) async {
+    final list = await _dataSource.getLessonsByStudentIds(studentIds);
+    return List<LessonEntity>.from(list);
+  }
 
   @override
   Future<LessonEntity?> getLessonById(String id) =>

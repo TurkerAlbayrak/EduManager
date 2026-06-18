@@ -21,8 +21,8 @@ class _StudentAssignmentScreenState extends State<StudentAssignmentScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final linkedId = context.read<AuthProvider>().currentUser?.linkedStudentId ?? '';
-      context.read<AssignmentProvider>().loadStudentAssignments(linkedId);
+      final userId = context.read<AuthProvider>().currentUser?.id ?? '';
+      context.read<AssignmentProvider>().loadStudentAssignments(userId);
     });
   }
 
@@ -57,7 +57,17 @@ class _StudentAssignmentScreenState extends State<StudentAssignmentScreen> {
                     const Spacer(),
                     if (a.status != AssignmentStatus.completed)
                       TextButton.icon(
-                        onPressed: () => provider.markAsCompleted(a.id),
+                        onPressed: () async {
+                          try {
+                            await provider.markAsCompleted(a.id);
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Hata: $e')),
+                              );
+                            }
+                          }
+                        },
                         icon: const Icon(Icons.check_circle_outline_rounded, size: 18),
                         label: const Text('Tamamla', style: TextStyle(fontSize: 13)),
                         style: TextButton.styleFrom(foregroundColor: AppColors.success),

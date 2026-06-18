@@ -1,18 +1,31 @@
 import '../../domain/entities/student_entity.dart';
 import '../../domain/repositories/student_repository.dart';
-import '../datasources/student_local_data_source.dart';
+import '../datasources/student_supabase_data_source.dart';
 import '../models/student_model.dart';
 
-/// StudentRepository'nin yerel JSON implementasyonu.
+/// StudentRepository'nin Supabase implementasyonu.
 class StudentRepositoryImpl implements StudentRepository {
-  final StudentLocalDataSource _dataSource;
+  final StudentSupabaseDataSource _dataSource;
 
-  StudentRepositoryImpl({StudentLocalDataSource? dataSource})
-      : _dataSource = dataSource ?? StudentLocalDataSource();
+  StudentRepositoryImpl({StudentSupabaseDataSource? dataSource})
+      : _dataSource = dataSource ?? StudentSupabaseDataSource();
 
   @override
-  Future<List<StudentEntity>> getStudentsByTeacherId(String teacherId) =>
-      _dataSource.getStudentsByTeacherId(teacherId);
+  Future<List<StudentEntity>> getAllStudents() async {
+    final list = await _dataSource.getAllStudents();
+    return List<StudentEntity>.from(list);
+  }
+
+  @override
+  Future<List<StudentEntity>> getStudentsByTeacherId(String teacherId) async {
+    final list = await _dataSource.getStudentsByTeacherId(teacherId);
+    return List<StudentEntity>.from(list);
+  }
+
+  Future<List<StudentEntity>> getStudentsByUserId(String userId) async {
+    final list = await _dataSource.getStudentsByUserId(userId);
+    return List<StudentEntity>.from(list);
+  }
 
   @override
   Future<StudentEntity?> getStudentById(String id) =>

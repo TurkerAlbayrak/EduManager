@@ -158,8 +158,6 @@ class StudentDetailScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 16),
                             _infoRow(Icons.email_outlined, 'E-posta', student.email),
-                            const SizedBox(height: 12),
-                            _infoRow(Icons.phone_outlined, 'Telefon', student.phone),
                             if (student.notes != null &&
                                 student.notes!.isNotEmpty) ...[
                               const SizedBox(height: 12),

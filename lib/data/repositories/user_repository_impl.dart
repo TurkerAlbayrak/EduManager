@@ -1,14 +1,14 @@
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/user_repository.dart';
-import '../datasources/user_local_data_source.dart';
+import '../datasources/user_supabase_data_source.dart';
 import '../models/user_model.dart';
 
-/// UserRepository'nin yerel JSON implementasyonu.
+/// UserRepository'nin Supabase implementasyonu.
 class UserRepositoryImpl implements UserRepository {
-  final UserLocalDataSource _dataSource;
+  final UserSupabaseDataSource _dataSource;
 
-  UserRepositoryImpl({UserLocalDataSource? dataSource})
-      : _dataSource = dataSource ?? UserLocalDataSource();
+  UserRepositoryImpl({UserSupabaseDataSource? dataSource})
+      : _dataSource = dataSource ?? UserSupabaseDataSource();
 
   @override
   Future<List<UserEntity>> getAllUsers() => _dataSource.getAllUsers();

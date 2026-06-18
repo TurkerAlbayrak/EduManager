@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/student_entity.dart';
 import '../../data/repositories/student_repository_impl.dart';
+import '../../data/repositories/user_repository_impl.dart';
 import 'package:uuid/uuid.dart';
 
 /// Öğrenci state management.
 /// CRUD işlemleri ve filtreleme.
 class StudentProvider extends ChangeNotifier {
   final StudentRepositoryImpl _repository = StudentRepositoryImpl();
+  final UserRepositoryImpl _userRepository = UserRepositoryImpl();
   static const _uuid = Uuid();
 
   List<StudentEntity> _students = [];
@@ -72,6 +74,49 @@ class StudentProvider extends ChangeNotifier {
     _applyFilters();
     notifyListeners();
     return created;
+  }
+
+  /// ID ile kullanıcı bulup öğrenci olarak ekle.
+  Future<String?> addStudentById({
+    required String teacherId,
+    required String studentSystemId,
+    required String level,
+  }) async {
+    final user = await _userRepository.getUserById(studentSystemId);
+    if (user == null || !user.isStudent) {
+      return 'Kullanıcı bulunamadı veya öğrenci değil';
+    }
+
+    // Zaten ekli mi kontrolü
+    final alreadyAdded = _students.any((s) => s.userId == studentSystemId);
+    if (alreadyAdded) {
+      return 'Bu öğrenci zaten sınıfınızda ekli';
+    }
+
+    final parts = user.name.split(' ');
+    final firstName = parts.first;
+    final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : '';
+
+    final now = DateTime.now();
+    final student = StudentEntity(
+      id: _uuid.v4(),
+      teacherId: teacherId,
+      userId: user.id,
+      firstName: firstName,
+      lastName: lastName,
+      phone: '', // Profilde tel olmadığı için boş geçiyoruz
+      email: user.email,
+      level: level,
+      isActive: true,
+      createdAt: now,
+      updatedAt: now,
+    );
+
+    final created = await _repository.createStudent(student);
+    _students.add(created);
+    _applyFilters();
+    notifyListeners();
+    return null; // Başarılı, hata yok
   }
 
   /// Öğrenci güncelle.

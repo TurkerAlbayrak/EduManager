@@ -30,16 +30,17 @@ class UserModel extends UserEntity {
 
   /// Model'i JSON'a dönüştürür.
   Map<String, dynamic> toJson() {
-    return {
+    final map = <String, dynamic>{
       'id': id,
       'name': name,
       'email': email,
       'password': password,
       'role': role == UserRole.teacher ? 'teacher' : 'student',
-      'avatarUrl': avatarUrl,
       'createdAt': createdAt.toIso8601String(),
-      'linkedStudentId': linkedStudentId,
     };
+    if (avatarUrl != null) map['avatarUrl'] = avatarUrl;
+    if (linkedStudentId != null) map['linkedStudentId'] = linkedStudentId;
+    return map;
   }
 
   /// Entity'den model oluşturur.

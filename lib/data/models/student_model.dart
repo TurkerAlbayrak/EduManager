@@ -5,6 +5,7 @@ class StudentModel extends StudentEntity {
   const StudentModel({
     required super.id,
     required super.teacherId,
+    super.userId,
     required super.firstName,
     required super.lastName,
     required super.phone,
@@ -21,6 +22,7 @@ class StudentModel extends StudentEntity {
     return StudentModel(
       id: json['id'] as String,
       teacherId: json['teacherId'] as String,
+      userId: json['userId'] as String?,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
       phone: json['phone'] as String,
@@ -35,19 +37,21 @@ class StudentModel extends StudentEntity {
 
   /// Model'i JSON'a dönüştürür.
   Map<String, dynamic> toJson() {
-    return {
+    final map = <String, dynamic>{
       'id': id,
       'teacherId': teacherId,
       'firstName': firstName,
       'lastName': lastName,
       'phone': phone,
       'email': email,
-      'notes': notes,
       'level': level,
       'isActive': isActive,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
     };
+    if (userId != null) map['userId'] = userId;
+    if (notes != null) map['notes'] = notes;
+    return map;
   }
 
   /// Entity'den model oluşturur.
@@ -55,6 +59,7 @@ class StudentModel extends StudentEntity {
     return StudentModel(
       id: entity.id,
       teacherId: entity.teacherId,
+      userId: entity.userId,
       firstName: entity.firstName,
       lastName: entity.lastName,
       phone: entity.phone,

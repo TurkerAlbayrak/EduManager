@@ -5,7 +5,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 
 import '../../providers/theme_provider.dart';
-
+import '../../providers/auth_provider.dart';
 /// Öğrenci ana kabuk (shell).
 class StudentShell extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
@@ -30,6 +30,21 @@ class _StudentShellState extends State<StudentShell> {
         actions: [
 
           Consumer<ThemeProvider>(builder: (context, tp, _) => IconButton(icon: Icon(tp.isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded), onPressed: tp.toggleTheme)),
+          IconButton(
+            icon: const Icon(Icons.person_rounded),
+            tooltip: 'Profil',
+            onPressed: () {
+              context.push('/profile');
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout_rounded, color: AppColors.danger),
+            tooltip: AppStrings.logout,
+            onPressed: () {
+              context.read<AuthProvider>().logout();
+              context.go('/login');
+            },
+          ),
         ],
       ),
       body: widget.navigationShell,

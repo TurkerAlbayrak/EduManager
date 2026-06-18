@@ -33,7 +33,7 @@ class LessonModel extends LessonEntity {
 
   /// Model'i JSON'a dönüştürür.
   Map<String, dynamic> toJson() {
-    return {
+    final map = <String, dynamic>{
       'id': id,
       'teacherId': teacherId,
       'studentId': studentId,
@@ -41,10 +41,11 @@ class LessonModel extends LessonEntity {
       'startTime': startTime,
       'durationMinutes': durationMinutes,
       'topic': topic,
-      'content': content,
-      'teacherNote': teacherNote,
       'status': _statusToString(status),
     };
+    if (content != null) map['content'] = content;
+    if (teacherNote != null) map['teacherNote'] = teacherNote;
+    return map;
   }
 
   /// Entity'den model oluşturur.

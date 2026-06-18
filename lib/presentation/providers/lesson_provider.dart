@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/lesson_entity.dart';
 import '../../data/repositories/lesson_repository_impl.dart';
+import '../../data/repositories/student_repository_impl.dart';
 import 'package:uuid/uuid.dart';
 
 /// Ders state management.
 class LessonProvider extends ChangeNotifier {
   final LessonRepositoryImpl _repository = LessonRepositoryImpl();
+  final StudentRepositoryImpl _studentRepository = StudentRepositoryImpl();
   static const _uuid = Uuid();
 
   List<LessonEntity> _lessons = [];
   bool _isLoading = false;
+  String? _error;
 
   List<LessonEntity> get lessons => _lessons;
   bool get isLoading => _isLoading;
+  String? get error => _error;
 
   List<LessonEntity> get upcomingLessons => _lessons
       .where((l) => l.status == LessonStatus.scheduled)
@@ -64,14 +68,22 @@ class LessonProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Öğrenciye ait dersleri yükle.
-  Future<void> loadStudentLessons(String studentId) async {
+  /// Öğrenciye ait dersleri yükle. (Artık userId alıyor)
+  Future<void> loadStudentLessons(String userId) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      _lessons = await _repository.getLessonsByStudentId(studentId);
+      final studentRecords = await _studentRepository.getStudentsByUserId(userId);
+      final studentIds = studentRecords.map((s) => s.id).toList();
+
+      if (studentIds.isEmpty) {
+        _lessons = [];
+      } else {
+        _lessons = await _repository.getLessonsByStudentIds(studentIds);
+      }
     } catch (e) {
+      _error = e.toString();
       _lessons = [];
     }
 
@@ -144,6 +156,17 @@ class LessonProvider extends ChangeNotifier {
     await _repository.deleteLesson(id);
     _lessons.removeWhere((l) => l.id == id);
     notifyListeners();
+  }
+
+  /// Dersi tamamlandı olarak işaretle (öğretmen onayı).
+  Future<void> markAsCompleted(String lessonId) async {
+    final index = _lessons.indexWhere((l) => l.id == lessonId);
+    if (index != -1) {
+      final updated = _lessons[index].copyWith(status: LessonStatus.completed);
+      await _repository.updateLesson(updated);
+      _lessons[index] = updated;
+      notifyListeners();
+    }
   }
 
   /// Belirli bir öğrencinin derslerini getir.
