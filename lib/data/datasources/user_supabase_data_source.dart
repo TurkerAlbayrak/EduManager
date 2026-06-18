@@ -32,6 +32,8 @@ class UserSupabaseDataSource {
 
       if (response == null) return null;
       return UserModel.fromJson(response);
+    } on AuthException {
+      rethrow;
     } catch (e) {
       return null;
     }

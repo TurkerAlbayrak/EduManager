@@ -41,7 +41,13 @@ class AuthProvider extends ChangeNotifier {
         return false;
       }
     } catch (e) {
-      _errorMessage = 'Giriş sırasında bir hata oluştu';
+      if (e.toString().contains('Email not confirmed')) {
+        _errorMessage = 'Lütfen e-postanızı doğrulayıp tekrar deneyin.';
+      } else if (e.toString().contains('Invalid login credentials')) {
+        _errorMessage = 'E-posta veya şifre hatalı';
+      } else {
+        _errorMessage = 'Giriş sırasında bir hata oluştu';
+      }
       _isLoading = false;
       notifyListeners();
       return false;

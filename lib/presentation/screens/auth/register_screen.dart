@@ -74,11 +74,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
 
     if (success && mounted) {
-      if (authProvider.isTeacher) {
-        context.go('/teacher/dashboard');
-      } else {
-        context.go('/student/dashboard');
-      }
+      context.go('/login');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Kayıt başarılı! Lütfen e-postanıza gelen link ile hesabınızı doğrulayın.'),
+          backgroundColor: AppColors.success,
+          duration: Duration(seconds: 5),
+        ),
+      );
     }
   }
 
