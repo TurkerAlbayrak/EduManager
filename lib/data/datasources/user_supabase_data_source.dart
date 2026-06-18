@@ -50,8 +50,8 @@ class UserSupabaseDataSource {
     final newUserJson = user.toJson();
     newUserJson['id'] = authResponse.user!.id; // Use Supabase Auth UUID
     
-    final response = await _supabase.from('users').insert(newUserJson).select().single();
-    return UserModel.fromJson(response);
+    await _supabase.from('users').insert(newUserJson);
+    return UserModel.fromJson(newUserJson);
   }
 
   Future<UserModel> updateUser(UserModel user) async {
