@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
@@ -19,6 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _tokenController = TextEditingController();
   bool _obscurePassword = true;
   UserRole _selectedRole = UserRole.student;
 
@@ -52,6 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _tokenController.dispose();
     super.dispose();
   }
 
@@ -61,6 +64,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!_hasMinLength || !_hasUppercase || !_hasLowercase || !_hasSpecialChar) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Lütfen şifre kurallarını karşılayın.')),
+      );
+      return;
+    }
+
+    final requiredToken = dotenv.env['REGISTER_TOKEN'];
+    if (requiredToken != null && _tokenController.text.trim() != requiredToken) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Geçersiz Davet Kodu!'),
+          backgroundColor: AppColors.danger,
+        ),
       );
       return;
     }
@@ -174,6 +188,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       _buildPasswordRule('En az bir küçük harf', _hasLowercase),
                       _buildPasswordRule('En az bir özel karakter (!@#\$...)', _hasSpecialChar),
                     ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Davet Kodu alanı
+                  TextFormField(
+                    controller: _tokenController,
+                    validator: (v) => v!.isEmpty ? 'Davet kodu boş olamaz' : null,
+                    decoration: const InputDecoration(
+                      labelText: 'Davet Kodu',
+                      prefixIcon: Icon(Icons.key_rounded),
+                    ),
                   ),
                   const SizedBox(height: 16),
 
